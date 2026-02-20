@@ -4,6 +4,7 @@
     class="canvas-container"
     @dragover.prevent
     @drop="handleDrop"
+    @click="handleClick"
   ></div>
 </template>
 <script setup>
@@ -11,18 +12,20 @@ import { ref, onMounted } from "vue";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { useRoomStore } from "@/stores/roomStore";
 
 let scene, camera, renderer, floor;
 const loader = new GLTFLoader();
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
+const store = useRoomStore();
 
 const container = ref(null);
 
 onMounted(() => {
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf0f0f0);
-
+  store.setStore(scene);
   const width = container.value.clientWidth;
   const height = container.value.clientHeight;
 
@@ -132,8 +135,10 @@ const cargarModelo3d = (id, position) => {
     (gltf) => {
       const model = gltf.scene;
       model.position.copy(position);
-
+      
       scene.add(model);
+      store.addFurnitureItem(model);
+
       console.log(`${id} añadido a la escena`);
     },
     undefined,
@@ -141,6 +146,10 @@ const cargarModelo3d = (id, position) => {
       console.error("Error cargando el modelo:", error);
     },
   );
+};
+
+const handleClick = (event) => {
+
 };
 </script>
 <style>

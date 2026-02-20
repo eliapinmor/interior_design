@@ -5,10 +5,22 @@ export const useRoomStore = defineStore('room', {
     state: () => ({
         furnitureItemsOnMap: [],
         draggedItem: null,
+        scene: null,
     }),
     actions: {
-        addFurnitureItem(item) {
-            this.furnitureItemsOnMap.push(item);
+        setStore(scene) {
+            this.scene = scene;
+            this.furnitureItemsOnMap = [];
+        },
+        addFurnitureItem(model) {
+            this.furnitureItemsOnMap.push(model);
+            console.log('lista', this.furnitureItemsOnMap);
+        },
+        showAllFurnitureItems() {
+            return this.furnitureItemsOnMap;
+        },
+        clearAllItems() {
+            this.furnitureItemsOnMap = [];
         }
     }
 })
