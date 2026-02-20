@@ -20,15 +20,12 @@ const mouse = new THREE.Vector2();
 const container = ref(null);
 
 onMounted(() => {
-  // 1. Escena
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf0f0f0);
 
-  // Obtener dimensiones del contenedor
   const width = container.value.clientWidth;
   const height = container.value.clientHeight;
 
-  // 2. Cámara
   camera = new THREE.PerspectiveCamera(
     75,
     width / height,
@@ -37,7 +34,6 @@ onMounted(() => {
   );
   camera.position.set(5, 5, 5);
 
-  // 3. Renderizador
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(width, height);
   container.value.appendChild(renderer.domElement);
@@ -52,7 +48,7 @@ onMounted(() => {
     side: THREE.DoubleSide,
   });
   floor = new THREE.Mesh(geometry, material);
-  floor.rotation.x = -Math.PI / 2; // Acostar el plano
+  floor.rotation.x = -Math.PI / 2;
   scene.add(floor);
 
   //paredes
@@ -98,7 +94,7 @@ onMounted(() => {
   light.position.set(5, 10, 7.5);
   scene.add(light);
   const fillLight = new THREE.PointLight(0xffffff, 1);
-  fillLight.position.set(-5, 5, -5); // Viene desde la esquina opuesta
+  fillLight.position.set(-5, 5, -5);
   scene.add(fillLight);
   scene.add(new THREE.AmbientLight(0xffffff, 0.6));
 

@@ -10,7 +10,7 @@
         @dragstart="onDragStart($event, item)"
       >
         <div class="icon">{{ item.icon }}</div>
-        <span class="name">{{ item.name }}</span>
+        <div class="name">{{ item.name }}</div>
       </div>
     </div>
   </div>
@@ -46,10 +46,18 @@ const onDragStart = (event, item) => {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px;
   background-color: #ffffff;
   border: #ccccc9 1px solid;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: grab;
+}
+
+.icon{
+  overflow: hidden;
+  border-right: #ccccc9 1px solid;
+  padding: 10px;
+}
+.name{
+  padding: 10px;
 }
 </style>
