@@ -149,7 +149,22 @@ const cargarModelo3d = (id, position) => {
 };
 
 const handleClick = (event) => {
+  const rect = container.value.getBoundingClientRect();
+  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(store.furnitureItemsOnMap, true);
+
+  if (intersects.length > 0) {
+    let furnitureItem = intersects[0].object;
+    while (furnitureItem.parent && !store.furnitureItemsOnMap.includes(furnitureItem)) {
+      furnitureItem = furnitureItem.parent;
+    }
+    if(furnitureItem) {
+      furnitureItem.rotation.y += Math.PI / 2;
+    }
+  }
 };
 </script>
 <style>
