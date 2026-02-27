@@ -171,8 +171,8 @@ const handleClick = (event) => {
     ) {
       furnitureItem = furnitureItem.parent;
     }
-    if (selectedFurniture.value) {
-      deselectItem(furnitureItem);
+    if (selectedFurniture.value && selectedFurniture.value !== furnitureItem) {
+      deselectItem(selectedFurniture.value);
     }
     selectedFurniture.value = furnitureItem;
     selectItem(furnitureItem);
@@ -216,10 +216,13 @@ const handleKeyDown = (event) => {
     case "ArrowRight":
       selectedFurniture.value.position.x += step;
       break;
+    case "Backspace":
     case "Delete":
-      scene.remove(selectedFurniture.value);
-      store.removeFurnitureItem(selectedFurniture.value);
-      selectedFurniture.value = null;
+      store.deleteFurnitureItem(selectedFurniture.value);
+      break;
+    case "Space":
+    case "KeyR":
+      selectedFurniture.value.rotation.y += Math.PI / 2;
       break;
   }
 };
