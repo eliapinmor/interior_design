@@ -4,11 +4,17 @@
       <p>PÁGINA DE DISEÑO DE INTERIORES</p>
     </div>
     <div>
-        <button>Limpiar todo</button>
+      <button @click="clearFurniture()">Limpiar todo</button>
     </div>
   </div>
 </template>
-<script setup></script>
+<script setup>
+import { useRoomStore } from "@/stores/roomStore";
+const store = useRoomStore();
+// const clearFurniture() {
+//   store.clearAllItems();
+// }
+</script>
 <style scoped>
 .header-container {
   display: flex;

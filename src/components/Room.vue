@@ -21,20 +21,17 @@ const mouse = new THREE.Vector2();
 const store = useRoomStore();
 
 const container = ref(null);
+const selectedFurniture = ref(null);
 
 onMounted(() => {
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf0f0f0);
   store.setStore(scene);
+  window.addEventListener("keydown", handleKeyDown);
   const width = container.value.clientWidth;
   const height = container.value.clientHeight;
 
-  camera = new THREE.PerspectiveCamera(
-    75,
-    width / height,
-    0.1,
-    1000,
-  );
+  camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
   camera.position.set(5, 5, 5);
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -122,7 +119,7 @@ const handleDrop = (event) => {
   const intersects = raycaster.intersectObject(floor);
 
   if (intersects.length > 0) {
-    const point = intersects[0].point; 
+    const point = intersects[0].point;
 
     cargarModelo3d(furnitureId, point);
   }
@@ -134,8 +131,15 @@ const cargarModelo3d = (id, position) => {
     path,
     (gltf) => {
       const model = gltf.scene;
+
+      const box = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      model.children.forEach((child) => {
+        child.position.x -= center.x;
+        child.position.z -= center.z;
+      });
       model.position.copy(position);
-      
+
       scene.add(model);
       store.addFurnitureItem(model);
 
@@ -154,16 +158,69 @@ const handleClick = (event) => {
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
   raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects(store.furnitureItemsOnMap, true);
+  const intersects = raycaster.intersectObjects(
+    store.furnitureItemsOnMap,
+    true,
+  );
 
   if (intersects.length > 0) {
     let furnitureItem = intersects[0].object;
-    while (furnitureItem.parent && !store.furnitureItemsOnMap.includes(furnitureItem)) {
+    while (
+      furnitureItem.parent &&
+      !store.furnitureItemsOnMap.includes(furnitureItem)
+    ) {
       furnitureItem = furnitureItem.parent;
     }
-    if(furnitureItem) {
-      furnitureItem.rotation.y += Math.PI / 2;
+    if (selectedFurniture.value) {
+      deselectItem(furnitureItem);
     }
+    selectedFurniture.value = furnitureItem;
+    selectItem(furnitureItem);
+  } else {
+    if (selectedFurniture.value) {
+      deselectItem(selectedFurniture.value);
+    }
+  }
+};
+const selectItem = (obj) => {
+  selectedFurniture.value = obj;
+  obj.traverse((child) => {
+    if (child.isMesh) {
+      child.material.emissive.setHex(0x7b68ee);
+      child.material.emissiveIntensity = 1.5;
+    }
+  });
+};
+const deselectItem = (obj) => {
+  selectedFurniture.value = null;
+  obj.traverse((child) => {
+    if (child.isMesh) {
+      child.material.emissive.setHex(0x000000);
+      child.material.emissiveIntensity = 0;
+    }
+  });
+};
+const handleKeyDown = (event) => {
+  if (!selectedFurniture.value) return;
+  const step = 0.1;
+  switch (event.code) {
+    case "ArrowUp":
+      selectedFurniture.value.position.z -= step;
+      break;
+    case "ArrowDown":
+      selectedFurniture.value.position.z += step;
+      break;
+    case "ArrowLeft":
+      selectedFurniture.value.position.x -= step;
+      break;
+    case "ArrowRight":
+      selectedFurniture.value.position.x += step;
+      break;
+    case "Delete":
+      scene.remove(selectedFurniture.value);
+      store.removeFurnitureItem(selectedFurniture.value);
+      selectedFurniture.value = null;
+      break;
   }
 };
 </script>
