@@ -55,7 +55,7 @@ onMounted(() => {
   const wallHeight = 2.5;
   const wallWidth = 5;
   const wallMaterial = new THREE.MeshStandardMaterial({
-    color: 0xf2ece6,
+    color: 0xeae3d9,
   });
 
   const wall1 = new THREE.Mesh(
@@ -96,7 +96,7 @@ onMounted(() => {
   const fillLight = new THREE.PointLight(0xffffff, 1);
   fillLight.position.set(-5, 5, -5);
   scene.add(fillLight);
-  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  scene.add(new THREE.AmbientLight(0xffffff, 0.9));
 
   // 7. Animación
   const animate = () => {
@@ -109,6 +109,7 @@ onMounted(() => {
 
 const handleDrop = (event) => {
   const furnitureId = event.dataTransfer.getData("furnitureId");
+  const furnitureName = event.dataTransfer.getData("furnitureName");
 
   const rect = container.value.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -121,16 +122,17 @@ const handleDrop = (event) => {
   if (intersects.length > 0) {
     const point = intersects[0].point;
 
-    cargarModelo3d(furnitureId, point);
+    cargarModelo3d(furnitureId, furnitureName, point);
   }
 };
-const cargarModelo3d = (id, position) => {
+const cargarModelo3d = (id, name, position) => {
   const path = `/models/${id}.glb`;
 
   loader.load(
     path,
     (gltf) => {
       const model = gltf.scene;
+      model.name = name;
 
       const box = new THREE.Box3().setFromObject(model);
       const center = box.getCenter(new THREE.Vector3());

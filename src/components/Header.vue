@@ -4,7 +4,9 @@
       <p>PÁGINA DE DISEÑO DE INTERIORES</p>
     </div>
     <div>
-      <button @click="clearFurniture()" class="btn-clearAll">Limpiar todo</button>
+      <button @click="clearFurniture()" class="btn-clearAll">
+        Limpiar todo
+      </button>
     </div>
   </div>
 </template>
@@ -13,7 +15,7 @@ import { useRoomStore } from "@/stores/roomStore";
 const store = useRoomStore();
 const clearFurniture = () => {
   store.clearAllItems();
-}
+};
 </script>
 <style scoped>
 .header-container {
@@ -32,5 +34,6 @@ const clearFurniture = () => {
   padding: 10px 20px;
   cursor: pointer;
   border-radius: 10px;
+  font-weight: 700;
 }
 </style>

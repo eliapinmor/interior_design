@@ -22,12 +22,15 @@
     <!-- toggle list -->
     <div>
       <h3>Muebles añadidos</h3>
-      <div
-        v-for="item in store.showAllFurnitureItems()"
-        :key="item.id"
-      >
-        <div class="item-list">{{ item.id }}</div>
+      <div v-for="item in store.showAllFurnitureItems()" :key="item.id">
+        <div class="item-list">
+          <div class="item-name">{{ item.name }}</div>
+          <div>
+            <button @click="deleteItem(item)" class="btn-delete"><i class="fa-solid fa-x"></i></button>
+          </div>
+        </div>
       </div>
+      <div class="spacer"></div>
     </div>
   </div>
 </template>
@@ -84,10 +87,39 @@ const furnitureItems = [
     iconPath: "furniture_icons/sofa.png",
     modelPath: "models/sofa.glb",
   },
+  {
+    id: "plant",
+    name: "Planta",
+    iconPath: "furniture_icons/plant.png",
+    modelPath: "models/plant.glb",
+  },
+  {
+    id: "trashcan",
+    name: "Papelera",
+    iconPath: "furniture_icons/trashcan.png",
+    modelPath: "models/trashcan.glb",
+  },
+  {
+    id: "coatRack",
+    name: "Perchero",
+    iconPath: "furniture_icons/coatRack.png",
+    modelPath: "models/coatRack.glb",
+  },
+  {
+    id: "radio",
+    name: "Radio",
+    iconPath: "furniture_icons/radio.png",
+    modelPath: "models/radio.glb",
+  }
 ];
 
 const onDragStart = (event, item) => {
   event.dataTransfer.setData("furnitureId", item.id);
+  event.dataTransfer.setData("furnitureName", item.name);
+};
+
+const deleteItem = (id) => {
+  store.deleteFurnitureItem(id);
 };
 </script>
 <style scoped>
@@ -95,6 +127,7 @@ const onDragStart = (event, item) => {
   padding: 20px;
   height: 100%;
   overflow-y: auto;
+  padding-bottom: 50px;
 }
 .furniture-list {
   display: flex;
@@ -131,7 +164,28 @@ const onDragStart = (event, item) => {
   background-color: #ffffff;
   border: #ccccc9 1px solid;
   border-radius: 8px;
-  padding: 10px;
   margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-name {
+  padding: 10px;
+}
+
+.btn-delete {
+  background-color: #ffffff;
+  border: none;
+  padding: 15px;
+  cursor: pointer;
+  border-left: #ccccc9 1px solid;
+  height: 100%;
+  border-radius: 0 8px 8px 0;
+  color: red;
+  font-weight: 700;
+}
+
+.spacer {
+  height: 50px;
 }
 </style>
